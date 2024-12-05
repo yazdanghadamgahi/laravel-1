@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         //php artisan migrate:fresh --seed
         // User::factory(10)->create();
-        User::factory(100)->create();
+        //User::factory(100)->create();
 
         $this->call(JobSeeder::class);
 

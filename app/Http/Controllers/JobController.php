@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Job;
+use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
 {
     public function index(){
         //    $jobs = Job::with('employer')->get();
-        $jobs = Job::with('employer')->paginate(5);
+        $jobs = Job::with('employer')->latest()->simplePaginate(10);
         //    $jobs = Job::with('employer')->simplePaginate(5);
         //    $jobs = Job::with('employer')->cursorPaginate(5); // faster
         return view('jobs.index',[
@@ -35,6 +36,9 @@ class JobController extends Controller
         return redirect('/jobs');
     }
     public function edit(Job $job){
+        if(Auth::guest()){
+            return redirect('/register');
+        }
         return view('jobs.edit',['job' => $job]);
     }
     public function update(Job $job){
