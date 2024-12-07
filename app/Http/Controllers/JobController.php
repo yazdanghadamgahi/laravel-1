@@ -2,28 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use App\Models\Job;
 use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
 {
-    public function index(){
-        //    $jobs = Job::with('employer')->get();
+    public function index()
+    {
         $jobs = Job::with('employer')->latest()->simplePaginate(10);
-        //    $jobs = Job::with('employer')->simplePaginate(5);
-        //    $jobs = Job::with('employer')->cursorPaginate(5); // faster
         return view('jobs.index',[
             'jobs' => $jobs
         ]);
     }
-    public function create(){
+    public function create()
+    {
         return view('jobs.create');
     }
-    public function show(Job $job){
+    public function show(Job $job)
+    {
         return view('jobs.show',['job' => $job]);
     }
-    public function store(){
+    public function store()
+    {
         request()->validate([
             'title' => ['required', 'min:3' , 'max:25'],
             'salary' => 'required',
@@ -35,13 +38,14 @@ class JobController extends Controller
         ]);
         return redirect('/jobs');
     }
-    public function edit(Job $job){
-        if(Auth::guest()){
-            return redirect('/register');
-        }
+    public function edit(Job $job)
+    {
+        Gate::authorize('edit-job',$job);
         return view('jobs.edit',['job' => $job]);
     }
-    public function update(Job $job){
+    public function update(Job $job)
+    {
+        Gate::authorize('edit-job',$job);
         //validate
         request()->validate([
             'title' => ['required', 'min:3' , 'max:40'],
@@ -55,7 +59,9 @@ class JobController extends Controller
         //redirect
         return redirect('/jobs/'.$job->id);
     }
-    public function destroy(Job $job){
+    public function destroy(Job $job)
+    {
+        Gate::authorize('edit-job',$job);
         $job->delete();
         return redirect('/jobs');
     }
