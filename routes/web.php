@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\RegisterUserController;
 
+
 Route::view('/', 'home');
 Route::view('/contact', 'contact');
 Route::resource('jobs', JobController::class);
